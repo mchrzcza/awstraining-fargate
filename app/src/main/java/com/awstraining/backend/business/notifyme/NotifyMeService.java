@@ -17,12 +17,10 @@ public class NotifyMeService {
 
     public String notifyMe(NotifyMeDO notifyMe) {
         String translatedText = translator.translate(notifyMe);
-        messageSender.send(translatedText);
-//        sentimentDetector.detectSentiment()
-        // TODO: lab3
-        //  1. Detect sentiment of translated message.
-        //  2. Change sending of text to "setiment: translated text" and return it.
-        return translatedText;
+        String sentiment = sentimentDetector.detectSentiment(notifyMe.targetLc(), translatedText);
+        String text = sentiment + ": " + translatedText;
+        messageSender.send(text);
+        return text;
     }
 
 }

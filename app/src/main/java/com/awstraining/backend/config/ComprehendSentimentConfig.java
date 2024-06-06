@@ -1,6 +1,12 @@
 package com.awstraining.backend.config;
 
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.comprehend.AmazonComprehend;
+import com.amazonaws.services.comprehend.AmazonComprehendClient;
+import com.amazonaws.services.translate.AmazonTranslateClient;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
@@ -18,12 +24,18 @@ public class ComprehendSentimentConfig {
     private String snsSecretKey;
 
     // TODO: lab3
-    //  0. Uncomment @Bean section.
-    //  1. Configure AmazonComprehend which will be used by fargate within AWS.
-    //  2. Make sure that your task role has access to detect sentiment action (ecs-task-role-policy).
     //  3. Think how to connect with AWS Service from your local pc.
-//    @Bean
-//    AmazonComprehend configureComprehendClient() {
-//     
-//    }
+    @Bean
+    AmazonComprehend configureComprehendClient() {
+
+        if (snsAccessKey != null && snsSecretKey != null) {
+            BasicAWSCredentials credentials = new BasicAWSCredentials(snsAccessKey, snsSecretKey);
+            AWSStaticCredentialsProvider credentialsProvider = new AWSStaticCredentialsProvider(credentials);
+            return AmazonComprehendClient.builder()
+                    .withCredentials(credentialsProvider)
+                    .withRegion(awsRegion)
+                    .build();
+        }
+        return AmazonComprehendClient.builder().build();
+    }
 }
