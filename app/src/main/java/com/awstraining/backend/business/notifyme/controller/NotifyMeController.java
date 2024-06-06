@@ -5,6 +5,7 @@ import com.awstraining.backend.api.rest.v1.model.NotifyMe;
 import com.awstraining.backend.api.rest.v1.model.SentMessage;
 import com.awstraining.backend.business.notifyme.NotifyMeDO;
 import com.awstraining.backend.business.notifyme.NotifyMeService;
+import com.awstraining.backend.business.notifyme.Translator;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +22,8 @@ public class NotifyMeController implements NotifyMeApi {
 
     @Override
     public ResponseEntity<SentMessage> notifyMe(NotifyMe notifyMe) {
-        String s = notifyMeService.notifyMe(map(notifyMe));
+        NotifyMeDO notifyMeDO = map(notifyMe);
+        String s = notifyMeService.notifyMe(notifyMeDO);
         return ResponseEntity.ok(map(s));
     }
 
